@@ -395,6 +395,26 @@
     margin-bottom: 9px;
   }
 
+  .gift-gifted {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-align: center;
+    padding: 14px 10px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 10px rgba(108,108,255,0.4));
+    animation: gifted-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes gifted-pulse {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(108,108,255,0.35)); }
+    50%       { filter: drop-shadow(0 0 18px rgba(167,139,250,0.6)); }
+  }
+
   .gift-btns { display: flex; flex-direction: column; gap: 7px; }
 
   .gift-btn {
@@ -561,6 +581,7 @@
       margin: 20px 0 28px;
     }
     .hero-photo { grid-row: 1; aspect-ratio: 1 / 1; height: auto; }
+    .hero-photo img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     .hero-text  { grid-row: 2; padding: 28px 24px 32px; }
     .hero-text h1 { font-size: 16px; }
     .hero-tag { margin-bottom: 14px; }
@@ -715,7 +736,7 @@
 const WALLET = 'TRJQi2hc4VdF67jC1NdjKfZ4ep4n54RL8F';
 
 const gifts = [
-  { emoji:'🧙', img:'images/harrypotter.jpg', priceVal:99,   price:'99£',   name:{ ru:'Тур по студии Warner Brothers: Harry Potter', en:'Warner Brothers Studio Tour: Harry Potter', pt:'Tour pelo Estúdio Warner Brothers: Harry Potter' }, links:{ rf:'https://yoomoney.ru/to/4100116543651308', int:'https://www.paypal.com/ncp/payment/KB25HVVK9TXLL' } },
+  { emoji:'🧙', img:'images/harrypotter.jpg', priceVal:99,   price:'99£',   gifted:true, name:{ ru:'Тур по студии Warner Brothers: Harry Potter', en:'Warner Brothers Studio Tour: Harry Potter', pt:'Tour pelo Estúdio Warner Brothers: Harry Potter' }, links:{ rf:'https://yoomoney.ru/to/4100116543651308', int:'https://www.paypal.com/ncp/payment/KB25HVVK9TXLL' } },
   { emoji:'🎭', img:'images/romeo.jpg',        priceVal:190,  price:'190£',  name:{ ru:'Билет на спектакль\n«Ромео и Джульетта»', en:'Ticket to\nRomeo & Juliet play', pt:'Ingresso para o espetáculo\nRomeu e Julieta' }, links:{ rf:'https://yoomoney.ru/to/4100116543651308', int:'https://www.paypal.com/ncp/payment/TMX4UBK7UA8QA' } },
   { emoji:'🎵', img:'images/ariana.jpg',       priceVal:550,  price:'550£',  name:{ ru:'Билет на концерт\nAriana Grande', en:'Concert ticket\nAriana Grande', pt:'Ingresso para o show\nda Ariana Grande' }, links:{ rf:'https://yoomoney.ru/to/4100116543651308', int:'https://www.paypal.com/ncp/payment/6LA76GHNCDPSW' } },
   { emoji:'🎬', img:'images/djirs5.jpg',       priceVal:619,  price:'619£',  name:{ ru:'Стабилизатор DJI RS5 Combo', en:'DJI RS5 Combo Gimbal', pt:'Estabilizador DJI RS5 Combo' }, links:{ rf:'https://yoomoney.ru/to/4100116543651308', int:'https://www.paypal.com/ncp/payment/NMKELEQ33ZXGU' } },
@@ -728,9 +749,9 @@ let currentLang = 'ru';
 
 function renderGifts() {
   const L = {
-    ru: { how:'Как хотите подарить?', rf:'Карта РФ', int:'Иностранная карта', cryp:'Криптовалюта' },
-    en: { how:'How to give?',         rf:'Russian card', int:'Foreign card', cryp:'Cryptocurrency' },
-    pt: { how:'Como presentear?',     rf:'Cartão russo', int:'Cartão estrangeiro', cryp:'Criptomoeda' }
+    ru: { how:'Как хотите подарить?', rf:'Карта РФ', int:'Иностранная карта', cryp:'Криптовалюта', gifted:'уже подарили ✨' },
+    en: { how:'How to give?',         rf:'Russian card', int:'Foreign card', cryp:'Cryptocurrency', gifted:'already gifted ✨' },
+    pt: { how:'Como presentear?',     rf:'Cartão russo', int:'Cartão estrangeiro', cryp:'Criptomoeda', gifted:'já presenteado ✨' }
   }[currentLang];
 
   document.getElementById('gifts-grid').innerHTML = gifts.map(g => `
@@ -741,6 +762,9 @@ function renderGifts() {
       </div>
       <div class="gift-name">${g.name[currentLang].replace(/\n/g,'<br>')}</div>
       <div class="gift-price">${g.price}</div>
+      ${g.gifted ? `
+      <div class="gift-gifted">${L.gifted}</div>
+      ` : `
       <div class="gift-pay-label">${L.how}</div>
       <div class="gift-btns">
         <a href="${g.links.rf}" target="_blank" class="gift-btn rf">
@@ -753,6 +777,7 @@ function renderGifts() {
           <span class="dot">₿</span>${L.cryp}
         </button>
       </div>
+      `}
     </div>
   `).join('');
 }
